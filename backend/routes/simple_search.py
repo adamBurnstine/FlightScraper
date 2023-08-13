@@ -6,8 +6,6 @@ import asyncio
 from pyppeteer import launch
 from bs4 import BeautifulSoup
 
-
-
 simple_search = Blueprint("simple_search", __name__) 
 
 @simple_search.route('/', methods=['GET', 'POST'])
@@ -17,9 +15,6 @@ def index():
     if (request.method == 'POST'):
         user_input = request.get_json()
 
-        #validate input, generate url, scrape, add to database
-
-        #validation done on frontend
         try:
             url = f"https://www.google.com/travel/flights?q=One%20way%20flights%20to%20{user_input['end']}%20from%20{user_input['start']}%20on%20{user_input['date']}"
             flightInfo = asyncio.run(scrape(url))
@@ -37,27 +32,27 @@ def index():
         except RuntimeError as e:
             print(e)
             print("Page to be scraped not rendered as expected. Try modifying search")
+            db.session.rollback()
             return {'statusCode': 400, 'message': "Google flights couldn't understand the input. Try modifying the search"}
         except AttributeError as e:
             print(e)
             print("Error: Error parsing flight data from html document")
+            db.session.rollback()
             abort(500)
         except KeyError as e:
             print(e)
+            db.session.rollback()
             abort(500)
         except Exception as e:
             print(e)
+            db.session.rollback()
             abort(400)
-
-        return user_input
-
 
 
 async def scrape(url):
-    
     browser = await launch(handleSIGINT=False, handleSIGTERM=False, handleSIGHUP=False)
     page = await browser.newPage()
-    await page.goto(url, {'waitUntil': 'domcontentloaded'}) #FIXME need to make sure the url was correct
+    await page.goto(url, {'waitUntil': 'domcontentloaded'})
 
     content = await page.content()
     soup = BeautifulSoup(content, "html.parser")
@@ -78,15 +73,11 @@ async def scrape(url):
     await asyncio.gather(
         page.waitForNavigation({'waitUntil': 'networkidle2'}),
         page.click('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > ul > li'),
-        
     )
 
     flight_url = page.url  #URL to see more info about flight
 
-    #print(f"Departing from {dptAirport} at {dptTime} and arriving at {arrAirport} at {arrTime}. Airline(s): {airline}. Flight duration: {duration}, Layovers: {layover}, Price: {price}")
     return {'dptTime': dptTime, 'arrTime': arrTime, 'airline': airline, 'duration': duration, 'dptAirport': dptAirport, 'arrAirport': arrAirport, 'layover': layover, 'price': price, 'flight_URL': flight_url}
-    
-
 
 
 # Implement this function after basic functionality working

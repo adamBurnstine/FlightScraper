@@ -46,7 +46,7 @@ const SimpleSearch: React.FC = () => {
                   </Flex>
                </Flex>
                <Flex direction='column' w='stretch'>
-                  <FormLabel>To: (airport code)</FormLabel>
+                  <FormLabel>To: (Country,)</FormLabel>
                   <Field as={Input} id={end.name} name={end.name} placeholder={"Country, City or Airport"} type='input'/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={end.name} />
