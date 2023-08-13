@@ -22,6 +22,6 @@ class SimpleSearch(db.Model):
     #add layover info if its feasible
 
     def __repr__(self):
-        return  f"Flight info: flight from {self.start} to {self.to} on {self.date} using {self.airline} for ${self.price}.)"
+        return  f"Search info: Searched on: {self.dtSearched}. flight from {self.start} to {self.end} on {self.date} using {self.airline} for ${self.price}.)"
     
     

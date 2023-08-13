@@ -30,6 +30,7 @@ const SimpleSearch: React.FC = (): JSX.Element => {
   const [displayFlight, setDisplayFlight] = useState<boolean>(false)
   const [flightInfo, setFlightInfo] = useState<FlightInfoType>()
   const [input, setInput] = useState<InputType>()
+  const [error, setError] = useState<boolean>()
 
   return (
     <Flex direction='column' mb='30%'>
@@ -38,6 +39,9 @@ const SimpleSearch: React.FC = (): JSX.Element => {
         <Heading textAlign='center' mt='-3%' fontSize={['20px', '30px', '40px', '60px']}>
           Single flight search
         </Heading>
+        <Text mt='1%' fontSize={['20px', '20px', '24px', '32px']} mx='15%' textAlign='center' fontWeight='400' textColor='darkslategray'>
+          Enter a start and end destination and the date you wish to travel. This application will then scrape google flights and return the best option for you with a link to get more details or purchase the flight.
+        </Text>
         <Flex direction='row' align='center' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
       </Flex>
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -55,15 +59,18 @@ const SimpleSearch: React.FC = (): JSX.Element => {
             },
             body: JSON.stringify(values)
           }).then(response => response.json()).then(data => {
-            console.log(data) //maniuplate data here
             const flight = {airline: data.airline, arrAirport: data.arrAirport, arrTime: data.arrTime, 
                                dptAirport: data.dptAirport, dptTime: data.dptTime, duration: data.duration, 
                                price: data.price, layover: data.layover, flight_URL: data.flight_URL}
             setFlightInfo(flight)
+            setDisplayFlight(true)
+            setError(false)
             console.log(flightInfo)
-          }) //catch here
+          }).catch(err => {
+            setDisplayFlight(false)
+            setError(true)
+          })
           setIsLoading(false)
-          setDisplayFlight(true)
           setSubmitting(false)
         }, 500)
       }}>
@@ -78,101 +85,112 @@ const SimpleSearch: React.FC = (): JSX.Element => {
               </Text>
             </Flex>
           ) : (
-            <ScaleFade initialScale={.8} in={displayFlight} unmountOnExit>
-              <Flex direction='row' mx='10%' w='90%' h='2px' bg='#C7C9D9' my='3%'/>
-              <Flex direction='column' alignItems='center' mx='15%'>
-                <Text textAlign='left' fontSize={['16px', '16px', '24px', '32px']} fontWeight='600'>
-                  {input ? (`Search from ${input.start} to ${input.end} on ${input.date.toLocaleDateString()}`) : (`No search yet`)}
-                </Text>
-                <Flex w='100%' style={{border: '1px solid #BEBEBE', borderRadius: '8px', padding: '8px',}} mt='3%'  direction='row' justifyContent='space-between'>
-                  <SimpleGrid columns={4} spacingY='15%' mb='4%' mt='2%' spacingX='4%' w='100%' ml='2%'>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Departure Time:
+            <>
+              {error ? (
+                <>
+                  <Flex direction='row' mx='10%' w='90%' h='2px' bg='#C7C9D9' mt='3%'/>
+                  <Text textAlign='center' mt='2%' fontSize={['16px', '20px', '24px', '24px']} color='red'>
+                    An error occurred: Modify the search or try again later.
+                  </Text>
+                </>
+                ) : (
+                  <ScaleFade initialScale={.8} in={displayFlight} unmountOnExit>
+                    <Flex direction='row' mx='10%' w='90%' h='2px' bg='#C7C9D9' my='3%'/>
+                    <Flex direction='column' alignItems='center' mx='15%'>
+                      <Text textAlign='left' fontSize={['16px', '16px', '24px', '32px']} fontWeight='600'>
+                        {input ? (`Search from ${input.start} to ${input.end} on ${input.date.toLocaleDateString()}`) : (`No search yet`)}
                       </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.dptTime}
-                      </Text>
+                      <Flex w='100%' style={{border: '1px solid #BEBEBE', borderRadius: '8px', padding: '8px',}} mt='3%'  direction='row' justifyContent='space-between'>
+                        <SimpleGrid columns={4} spacingY='15%' mb='4%' mt='2%' spacingX='4%' w='100%' ml='2%'>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Departure Time:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.dptTime}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Departure Airport:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.dptAirport}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Arrival Time:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.arrTime}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Arrival Airport:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.arrAirport}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Duration:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.duration}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Layover(s):
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.layover}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Airline:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {flightInfo?.airline}
+                            </Text>
+                          </Flex>
+                          <Flex direction='column'>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
+                              Price:
+                            </Text>
+                            <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
+                              {`$${flightInfo?.price}`}
+                            </Text>
+                          </Flex>
+                        </SimpleGrid>
+                        <Flex direction='column' justifyContent='center' mr='2%'>
+                          <Link isExternal href={flightInfo?.flight_URL}>
+                            <Button
+                              _hover={{ backgroundColor: '#4746CE' }}
+                              _active={{ backgroundColor: '#3635AA' }}
+                              backgroundColor='rgba(78, 103, 235, 1)'
+                              color='rgba(255, 255, 255, 1)'
+                              width='50px'
+                              alignSelf='center'
+                              textColor='white'
+                              w='150px'
+                              h='50px'
+                              fontWeight={600}
+                              mr='2%'
+                              fontSize='20px'>
+                              More details
+                            </Button>
+                          </Link>
+                        </Flex>
+                      </Flex>
                     </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Departure Airport:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.dptAirport}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Arrival Time:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.arrTime}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Arrival Airport:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.arrAirport}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Duration:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.duration}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Layover(s):
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.layover}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Airline:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {flightInfo?.airline}
-                      </Text>
-                    </Flex>
-                    <Flex direction='column'>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
-                        Price:
-                      </Text>
-                      <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='500' textColor='gray'>
-                        {`$${flightInfo?.price}`}
-                      </Text>
-                    </Flex>
-                  </SimpleGrid>
-                  <Flex direction='column' justifyContent='center' mr='2%'>
-                    <Link isExternal href={flightInfo?.flight_URL}>
-                      <Button
-                        _hover={{ backgroundColor: '#4746CE' }}
-                        _active={{ backgroundColor: '#3635AA' }}
-                        backgroundColor='rgba(78, 103, 235, 1)'
-                        color='rgba(255, 255, 255, 1)'
-                        width='50px'
-                        alignSelf='center'
-                        textColor='white'
-                        w='150px'
-                        h='50px'
-                        fontWeight={600}
-                        mr='2%'
-                        fontSize='20px'>
-                        More details
-                      </Button>
-                    </Link>
-                  </Flex>
-                </Flex>
-              </Flex>
-            </ScaleFade>
+                  </ScaleFade>
+              )}
+            </>
           )}
         </>
       </Formik>

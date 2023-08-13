@@ -10,6 +10,7 @@ interface IProps {
 const Header: React.FC<IProps> = ({ currentRoute }): JSX.Element | null => {
     const location = useLocation()
     const navigate = useNavigate()
+    
     const navBarRoutes = [
         {
             title: 'Home',
@@ -18,6 +19,10 @@ const Header: React.FC<IProps> = ({ currentRoute }): JSX.Element | null => {
         {
             title: 'Single Flight Search',
             path: '/single_flight',
+        },
+        {
+            title: 'Single Flight Search History',
+            path: '/single_flight/history'
         },
     ]
 

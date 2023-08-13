@@ -1,4 +1,5 @@
 from flask import Blueprint, abort, jsonify, make_response, request
+from sqlalchemy import desc
 from ..extensions import db
 from datetime import date, datetime
 from ..models.SimpleSearch import SimpleSearch
@@ -33,7 +34,7 @@ def index():
             print(e)
             print("Page to be scraped not rendered as expected. Try modifying search")
             db.session.rollback()
-            return {'statusCode': 400, 'message': "Google flights couldn't understand the input. Try modifying the search"}
+            abort(418)
         except AttributeError as e:
             print(e)
             print("Error: Error parsing flight data from html document")
@@ -80,14 +81,18 @@ async def scrape(url):
     return {'dptTime': dptTime, 'arrTime': arrTime, 'airline': airline, 'duration': duration, 'dptAirport': dptAirport, 'arrAirport': arrAirport, 'layover': layover, 'price': price, 'flight_URL': flight_url}
 
 
-# Implement this function after basic functionality working
-# @simple_search.route('/history', methods=['GET'])
-# def history():
-
-
-
-
-
+@simple_search.route('/history', methods=['GET'])
+def history():
+    searches = SimpleSearch.query.order_by(desc('dtSearched')).limit(50)
+    #print(searches)
+    history = []
+    for search in searches:
+        print(search.dtSearched)
+        history.append({'dtSearched': search.dtSearched, 'searchDPT': search.start, 'searchARR': search.end, 'searchDate': search.date, 'airline': search.airline, 
+                      'dptTime': search.dptTime, 'dptAirport': search.dptAirport, 'arrTime': search.arrTime, 'arrAirport': search.arrAirport, 
+                      'duration': search.duration, 'price': search.price, 'layover': search.layover, 'flight_URL': search.url})
+    print(type(history))
+    return jsonify(history)
 
 
 # #Data validation - pydantics - if I want to use
