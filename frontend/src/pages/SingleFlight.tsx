@@ -16,6 +16,7 @@ interface InputType {
 
 const SimpleSearch: React.FC = (): JSX.Element => {
    const [input, setInput] = useState<InputType>()
+   const [errorPosting, setErrorPosting] = useState<Boolean>(false)
 
     return (
         <Flex direction='column' mb='30%'>
@@ -37,16 +38,18 @@ const SimpleSearch: React.FC = (): JSX.Element => {
                 body: JSON.stringify(values)
               }).then(response => response.json()
               ).then(data => {
-                setInput(data) //Hear is where I can change variables based on the data
+                // setInput(data) //Hear is where I can change variables based on the data
                 console.log(data)
+              }).catch((e) => {
+                setErrorPosting(true)
               })
-              resetForm()
+              // resetForm()
               setSubmitting(false)
             }, 1000)
           }}>
             <MainForm/>
           </Formik>
-          {input ? (
+          {input && !errorPosting ? (
             <>
               <Flex direction='row' align='center' mx='10%' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%' />
               <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
@@ -59,6 +62,16 @@ const SimpleSearch: React.FC = (): JSX.Element => {
               <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
                 No search requested yet
               </Text>
+            </>
+          )}
+          
+          {errorPosting ? (
+            <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
+              Error fetching flight data
+            </Text>
+          ) : (
+            <>
+              <Flex/>
             </>
           )}
         </Flex>
