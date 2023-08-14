@@ -24,6 +24,10 @@ const Header: React.FC<IProps> = ({ currentRoute }): JSX.Element | null => {
             title: 'Single Flight Search History',
             path: '/single_flight/history'
         },
+        {
+            title: 'Cheapest Route Search',
+            path: '/cheapest_route',
+        }
     ]
 
     const handleLogoClick= () => {
