@@ -1,6 +1,10 @@
 import React from 'react'
 import { Flex, Image, Heading, Text } from '@chakra-ui/react'
 import logo from '../images/FlightScraperLogo.svg'
+import initialValuesCR from '../components/Forms/CheapestRoute/initialValuesCR'
+import validationSchemaCR from '../components/Forms/CheapestRoute/validationSchemaCR'
+import { Formik } from 'formik'
+import CRForm from '../components/Forms/CheapestRoute/CRForm'
 
 const CheapestRoute: React.FC = (): JSX.Element => {
 
@@ -16,7 +20,14 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                 </Text>
                 <Flex direction='row' align='center' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
             </Flex>
+            <Formik initialValues={initialValuesCR} validationSchema={validationSchemaCR} onSubmit={(values, { setSubmitting }) => setSubmitting(false)}>
+                <CRForm/>
+            </Formik>
         </Flex>
+
+        
+
+
     )
 }
 
