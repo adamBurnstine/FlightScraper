@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 from .extensions import db
 from .routes.simple_search import simple_search
+from .routes.cheapest_route import cheapest_route
 
 def create_app():
     #Instantiate and configure app
@@ -22,5 +23,5 @@ def create_app():
 
     
     app.register_blueprint(simple_search, url_prefix='/simple_search')
-
+    app.register_blueprint(cheapest_route, url_prefix='/cheapest_route')
     return app

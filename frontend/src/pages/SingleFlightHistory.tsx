@@ -20,8 +20,9 @@ interface SearchInfoType {
 
 const SimpleSearchHistory: React.FC = (): JSX.Element => {
     const [numToLoad, setNumToLoad] = useState<number>(5)
-    const [ready, setReady] = useState<boolean>(false)
+    
     const [prevSearches] = useState<SearchInfoType[]>([])
+    const [error, setError] = useState<boolean>()
     let i: number = 0
     
     useEffect(() => {
@@ -30,7 +31,10 @@ const SimpleSearchHistory: React.FC = (): JSX.Element => {
                 data.map((search: SearchInfoType, i: number) => (
                     prevSearches.push(search)
                 ))
-                setReady(true)
+                setError(false)
+            }).catch(err => {
+                console.log(err);
+                setError(true)
             })
             i++
         }
@@ -54,14 +58,14 @@ const SimpleSearchHistory: React.FC = (): JSX.Element => {
                 <Flex direction='row' align='center' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
             </Flex>
             <div/>
-            {ready && prevSearches.map((search: SearchInfoType, i: number) => (
-                <>
+            {!error ? prevSearches.map((search: SearchInfoType, i: number) => (
+                <div key={i}>
                     {i < numToLoad && (
                         <Flex direction='column' alignItems='center' mx='10%'>
                             <Text textAlign='left' fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' w='stretch'>
                                 {`Search on ${search.dtSearched.replace(" GMT", '')}. Flights from ${search.searchDPT} to ${search.searchARR} on ${search.searchDate}`}
                             </Text>
-                            <Flex w='100%' style={{border: '1px solid #BEBEBE', borderRadius: '8px', padding: '8px',}} mb='5%' mt='1%' direction='row' justifyContent='space-between'>
+                            <Flex w='100%' style={{border: '3px solid navy', borderRadius: '40px', padding: '8px',}} mb='5%' mt='1%' direction='row' justifyContent='space-between'>
                                 <SimpleGrid columns={4} spacingY='15%' mb='4%' mt='2%' spacingX='4%' w='100%' ml='2%'>
                                 <Flex direction='column'>
                                     <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
@@ -150,26 +154,36 @@ const SimpleSearchHistory: React.FC = (): JSX.Element => {
                             </Flex>
                         </Flex>
                     )}
+                </div>
+            )) : (
+                <Flex direction='column' justifyContent='center'>
+                    <Heading textAlign='center' fontWeight='500' color='red'>
+                        Something went wrong while fetching data: please try again later.
+                    </Heading>
+                </Flex>
+            )}
+            {!error && (
+                <>
+                    <Button
+                        _hover={{ backgroundColor: '#4746CE' }}
+                        _active={{ backgroundColor: '#3635AA' }}
+                        backgroundColor='rgba(78, 103, 235, 1)'
+                        borderRadius='30px'
+                        color='#c5e8fa'
+                        isDisabled={numToLoad >= prevSearches.length}
+                        width='50px'
+                        alignSelf='center'
+                        textColor='white'
+                        w='200px'
+                        h='60px'
+                        mb={'5%'}
+                        fontWeight={600}
+                        fontSize='30px'
+                        onClick={handleLoadMore}>
+                        Load More
+                    </Button>
                 </>
-            ))}
-            <Button
-                _hover={{ backgroundColor: '#4746CE' }}
-                _active={{ backgroundColor: '#3635AA' }}
-                backgroundColor='rgba(78, 103, 235, 1)'
-                borderRadius='30px'
-                color='#c5e8fa'
-                isDisabled={numToLoad >= prevSearches.length}
-                width='50px'
-                alignSelf='center'
-                textColor='white'
-                w='200px'
-                h='60px'
-                mb={'5%'}
-                fontWeight={600}
-                fontSize='30px'
-                onClick={handleLoadMore}>
-                Load More
-            </Button>
+            )}
         </Flex>
     )
 }

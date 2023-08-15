@@ -21,6 +21,11 @@ const formModelCR = {
             label: 'Destinations:',
             errorMsg: '',
         },
+        tripLength: {
+            name: 'tripLength',
+            label: 'Trip Length',
+            errorMsg: '',
+        }
     }
 }
 

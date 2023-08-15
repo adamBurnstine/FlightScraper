@@ -40,21 +40,21 @@ const SimpleSearch: React.FC = () => {
             <Flex direction={windowWidth > 850 ? 'row' : 'column'} justifyContent='space-between' gap={windowWidth > 850 ? '1%' : '10%'}>
                <Flex direction='column' w='stretch'>
                   <FormLabel>From: (airport code) </FormLabel>
-                  <Field as={Input} id={start.name} name={start.name} placeholder={"Country, City, or Airport"} type='input'/>
+                  <Field as={Input} id={start.name} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} name={start.name} placeholder={"Country, City, or Airport"} type='input'/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={start.name} />
                   </Flex>
                </Flex>
-               <Flex direction='column' w='stretch'>
+               <Flex direction='column'  w='stretch'>
                   <FormLabel>To: (Country,)</FormLabel>
-                  <Field as={Input} id={end.name} name={end.name} placeholder={"Country, City or Airport"} type='input'/>
+                  <Field style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} as={Input} id={end.name} name={end.name} placeholder={"Country, City or Airport"} type='input'/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={end.name} />
                   </Flex>
                </Flex>
                <Flex direction='column' w='stretch'>
                   <FormLabel>Date:</FormLabel>
-                  <Field as={Input} type='date' id={date.name} name={date.name} min={minDateString}/>
+                  <Field as={Input} type='date' style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} id={date.name} name={date.name} min={minDateString}/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={date.name} />
                   </Flex>
