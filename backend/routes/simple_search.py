@@ -93,24 +93,3 @@ def history():
                       'duration': search.duration, 'price': search.price, 'layover': search.layover, 'flight_URL': search.url})
     print(type(history))
     return jsonify(history)
-
-
-# #Data validation - pydantics - if I want to use
-# class SimpleSearchInput(BaseModel):
-#     start: string
-#     end: string
-#     date: date
-#     searchDate: datetime = datetime.utcnow
-
-
-# class FlightInfo(BaseModel):
-#     dptTime: datetime #subject to change
-#     arrTime: datetime #subject to change to string    reason for change: string is easier to implement, datetime means could base the number of days based on the arrival date if the flight lands a different date
-#     price: conint(gt=0, lt=10000)
-#     arrAirport: string
-#     dptAirport: string
-#     layover: string
-#     layoverInfo: [] | None
-#     airline: string
-#     duration: string #could change to a number of minutes
-#     url: string
