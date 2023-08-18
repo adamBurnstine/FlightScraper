@@ -6,6 +6,30 @@ import validationSchemaCR from '../components/Forms/CheapestRoute/validationSche
 import { Formik, useFormikContext } from 'formik'
 import CRForm from '../components/Forms/CheapestRoute/CRForm'
 
+interface RouteType {
+    flights: FlightInfoType[],
+    path: DestinationType[],
+    price: number,
+}
+
+interface FlightInfoType { //Flights is an array of flight info type
+    dptTime: string,
+    arrTime: string,
+    airline: string,
+    duration: string,
+    dptAirport: string,
+    date: Date,
+    arrAirport: string,
+    layover: string,
+    price: number,
+    flight_URL: string,
+}
+
+interface DestinationType { //Path is an array of destination type
+    location: string, 
+    numDays: number,
+}
+
 const CheapestRoute: React.FC = (): JSX.Element => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(true)
@@ -38,14 +62,19 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                         },
                         body: JSON.stringify(values)
                     }).then(response=> response.json()).then(data => {
-                        console.log(data)
+                        //console.log(data)
+                        const { avgPrice, numFlights, numRoutes, topRoutes } = data
+                        console.log("average price:" + avgPrice)
+                        console.log("Num flights: " + numFlights)
+                        console.log("Num routes: " + numRoutes) 
+
                         setError(false)
                     }).catch(err => {
                         setError(true)
                     })
                     setIsLoading(false)
                     setSubmitting(false)
-                }, 500)
+                }, 100)
                 }}>
                 
                 
@@ -88,8 +117,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
             {isLoading && (
                 <>
                     <Flex direction='column' alignItems='center'>
-                        <Flex direction='row' mx='10%' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
-                        <Spinner size='xl' emptyColor='gray.200'/>
+                        <Spinner size='xl' emptyColor='gray.200' mt='2%'/>
                         <Text textAlign='center' mt='2%' fontSize={['16px', '20px', '24px', '24px']}>
                             This may take a couple moments
                         </Text>

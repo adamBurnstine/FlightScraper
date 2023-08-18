@@ -13,6 +13,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../backend/databases/simpleSearch.sqlite3'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_BINDS'] = {'cheapest_route' : 'sqlite:///../backend/databases/cheapestRoute.sqlite3'}
+    app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
     #print(os.environ['DEBUG'])
 
     app.app_context().push()

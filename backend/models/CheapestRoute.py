@@ -10,9 +10,19 @@ class Search(db.Model):
     destinations = db.relationship('Destination', backref='search')
     flights = db.relationship('Flight', backref='search')
     routes = db.relationship('Route', backref='search')
+    num_flights = db.Column(db.Integer)
+    num_routes = db.Column(db.Integer)
+    avg_route_price = db.Column(db.Float)
 
     def __repr__(self):
-        return f"Date Searched: {self.date_searched}; Start/End location: {self.start_loc}; Start Date: {self.start_date}; End Date: {self.end_date}; Destinations: {self.destinations}"
+        out = f"Date Searched: {self.date_searched}; Start/End location: {self.start_loc}; Start Date: {self.start_date}; End Date: {self.end_date}; Destinations: {self.destinations}"
+        if type(self.num_flights) != type(None): 
+            out += f"; Num flights searched: {self.num_flights}"
+        if type(self.num_routes) != type(None):
+            out += f"; Num routes searched: {self.num_routes}"
+        if type(self.avg_route_price) != type(None): 
+            out += f"; Average route price: {self.avg_route_price}"
+        return out
 
 class Destination(db.Model):
     __bind_key__ = 'cheapest_route'
@@ -29,6 +39,7 @@ flight_route = db.Table('flight_route',
                         db.Column('flight_id', db.Integer, db.ForeignKey('flight.id')), 
                         db.Column('route_id', db.Integer, db.ForeignKey('route.id')), 
                         bind_key='cheapest_route')
+
 
 class Flight(db.Model):
     __bind_key__ = 'cheapest_route'
@@ -49,7 +60,7 @@ class Flight(db.Model):
     search_date_searched = db.Column(db.DateTime, db.ForeignKey('search.date_searched'))
 
     def __repr__(self):
-        return f"Id: {self.id}; From: {self.dpt_airport} at {self.dpt_time}; To: {self.arr_airport} at {self.arr_time}; On: {self.date}; Airline: {self.airline}; Price: {self.price}; Layover: {self.layover}; Duration: {self.duration}; Search: {self.search_date_searched}; Search from: {self.search_from}; Search to: {self.search_to}"
+        return f"\nId: {self.id}; From: {self.dpt_airport} at {self.dpt_time}; To: {self.arr_airport} at {self.arr_time}; On: {self.date}; Airline: {self.airline}; Price: {self.price}; Layover: {self.layover}; Duration: {self.duration}; Search from: {self.search_from}; Search to: {self.search_to}"
 
 class Route(db.Model):
     __bind_key__ = 'cheapest_route'
@@ -60,6 +71,6 @@ class Route(db.Model):
     flights = db.relationship('Flight', secondary=flight_route, backref='routes')
 
     def __repr__(self):
-        return f"ID: {self.id}; price: {self.price}; Flights: {self.flights}; Search: {self.search_date_searched}"
+        return f"\nID: {self.id}; price: {self.price}; Flights: {self.flights}; Search: {self.search_date_searched}"
 
 
