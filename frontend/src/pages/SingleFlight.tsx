@@ -100,7 +100,7 @@ const SimpleSearch: React.FC = (): JSX.Element => {
                       <Text textAlign='left' fontSize={['16px', '16px', '24px', '32px']} fontWeight='600'>
                         {input ? (`Search from ${input.start} to ${input.end} on ${input.date.toLocaleDateString()}`) : (`No search yet`)}
                       </Text>
-                      <Flex w='100%' style={{border: '1px solid #BEBEBE', borderRadius: '8px', padding: '8px',}} mt='3%'  direction='row' justifyContent='space-between'>
+                      <Flex w='100%' style={{border: '2px solid #BEBEBE', borderRadius: '50px', padding: '8px',}} mt='3%'  direction='row' justifyContent='space-between'>
                         <SimpleGrid columns={4} spacingY='15%' mb='4%' mt='2%' spacingX='4%' w='100%' ml='2%'>
                           <Flex direction='column'>
                             <Text fontSize={['12px', '12px', '16px', '20px']} fontWeight='600' textColor='black'>
@@ -177,6 +177,7 @@ const SimpleSearch: React.FC = (): JSX.Element => {
                               width='50px'
                               alignSelf='center'
                               textColor='white'
+                              borderRadius='10px'
                               w='150px'
                               h='50px'
                               fontWeight={600}

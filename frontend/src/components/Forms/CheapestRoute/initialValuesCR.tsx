@@ -13,8 +13,8 @@ const {
 const initialValuesCR = { 
     [startDate.name]: '',
     [endDate.name]: '',
-    [startLoc.name]: 'temp',
-    [destinations.name]: [{destination: 'temp', numDays: ''}, {destination: 'temp', numDays: ''}],
+    [startLoc.name]: '',
+    [destinations.name]: [{destination: '', numDays: ''}, {destination: '', numDays: ''}],
     [tripLength.name]: 0, 
 }
 

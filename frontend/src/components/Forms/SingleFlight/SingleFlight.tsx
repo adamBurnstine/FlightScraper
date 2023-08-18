@@ -39,15 +39,15 @@ const SimpleSearch: React.FC = () => {
             </Text>
             <Flex direction={windowWidth > 850 ? 'row' : 'column'} justifyContent='space-between' gap={windowWidth > 850 ? '1%' : '10%'}>
                <Flex direction='column' w='stretch'>
-                  <FormLabel>From: (airport code) </FormLabel>
-                  <Field as={Input} id={start.name} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} name={start.name} placeholder={"Country, City, or Airport"} type='input'/>
+                  <FormLabel>From:</FormLabel>
+                  <Field as={Input} id={start.name} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} name={start.name} placeholder={"Enter a city or aiport"} type='input'/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={start.name} />
                   </Flex>
                </Flex>
                <Flex direction='column'  w='stretch'>
-                  <FormLabel>To: (Country,)</FormLabel>
-                  <Field style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} as={Input} id={end.name} name={end.name} placeholder={"Country, City or Airport"} type='input'/>
+                  <FormLabel>To:</FormLabel>
+                  <Field style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} as={Input} id={end.name} name={end.name} placeholder={"Enter a city or airport"} type='input'/>
                   <Flex color='red.500' fontSize='xs'>
                      <ErrorMessage name={end.name} />
                   </Flex>
@@ -65,13 +65,13 @@ const SimpleSearch: React.FC = () => {
                _active={{ backgroundColor: '#3635AA' }}
                backgroundColor='rgba(78, 103, 235, 1)'
                color='rgba(255, 255, 255, 1)'
-               width='50px'
+               width='90px'
                alignSelf='center'
                textColor='white'
-               w={windowWidth > 550 ? '70px' : '60px'}
+               borderRadius='6px'
                fontWeight={600}
                onClick={handleSubmit}
-               fontSize='16px'
+               fontSize='18px'
                mt='3%'>
                Submit
             </Button>
