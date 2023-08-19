@@ -3,31 +3,15 @@ import React from 'react'
 import logo from '../images/FlightScraperLogo.svg'
 import { useLocation, useNavigate, NavLink } from 'react-router-dom'
 
-interface IProps {
-    currentRoute: string
-}
-
-const Header: React.FC<IProps> = ({ currentRoute }): JSX.Element | null => {
+const Header: React.FC = (): JSX.Element | null => {
     const location = useLocation()
     const navigate = useNavigate()
     
     const navBarRoutes = [
-        {
-            title: 'Home',
-            path: '/',
-        },
-        {
-            title: 'Single Flight Search',
-            path: '/single_flight',
-        },
-        {
-            title: 'Single Flight Search History',
-            path: '/single_flight/history'
-        },
-        {
-            title: 'Cheapest Route Search',
-            path: '/cheapest_route',
-        }
+        {title: 'Home', path: '/'},
+        {title: 'Single Flight Search', path: '/single_flight'},
+        {title: 'Single Flight Search History', path: '/single_flight/history'},
+        {title: 'Cheapest Route Search', path: '/cheapest_route'}
     ]
 
     const handleLogoClick= () => {

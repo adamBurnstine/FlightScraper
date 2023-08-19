@@ -20,7 +20,6 @@ interface SearchInfoType {
 
 const SimpleSearchHistory: React.FC = (): JSX.Element => {
     const [numToLoad, setNumToLoad] = useState<number>(5)
-    
     const [prevSearches] = useState<SearchInfoType[]>([])
     const [error, setError] = useState<boolean>()
     let i: number = 0
@@ -38,7 +37,6 @@ const SimpleSearchHistory: React.FC = (): JSX.Element => {
             })
             i++
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []) 
 
     const handleLoadMore = () => {
@@ -163,26 +161,24 @@ const SimpleSearchHistory: React.FC = (): JSX.Element => {
                 </Flex>
             )}
             {!error && (
-                <>
-                    <Button
-                        _hover={{ backgroundColor: '#4746CE' }}
-                        _active={{ backgroundColor: '#3635AA' }}
-                        backgroundColor='rgba(78, 103, 235, 1)'
-                        borderRadius='30px'
-                        color='#c5e8fa'
-                        isDisabled={numToLoad >= prevSearches.length}
-                        width='50px'
-                        alignSelf='center'
-                        textColor='white'
-                        w='200px'
-                        h='60px'
-                        mb={'5%'}
-                        fontWeight={600}
-                        fontSize='30px'
-                        onClick={handleLoadMore}>
-                        Load More
-                    </Button>
-                </>
+                <Button
+                    _hover={{ backgroundColor: '#4746CE' }}
+                    _active={{ backgroundColor: '#3635AA' }}
+                    backgroundColor='rgba(78, 103, 235, 1)'
+                    borderRadius='30px'
+                    color='#c5e8fa'
+                    isDisabled={numToLoad >= prevSearches.length}
+                    width='50px'
+                    alignSelf='center'
+                    textColor='white'
+                    w='200px'
+                    h='60px'
+                    mb={'5%'}
+                    fontWeight={600}
+                    fontSize='30px'
+                    onClick={handleLoadMore}>
+                    Load More
+                </Button>
             )}
         </Flex>
     )

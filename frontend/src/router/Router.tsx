@@ -12,7 +12,7 @@ const Router: React.FC = (): JSX.Element => {
 
     return (
         <ChakraProvider>
-            <Header currentRoute={location.pathname}/>
+            <Header/>
             <Routes location={location}>
                 <Route path='/' element={<Home/>}/>
                 <Route path='/single_flight' element={<SingleFlight/>}/>

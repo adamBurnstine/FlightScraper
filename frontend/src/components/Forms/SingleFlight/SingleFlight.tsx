@@ -5,30 +5,13 @@ import formModel from './formModel'
 
 const SimpleSearch: React.FC = () => {
     const { start, end, date } = formModel.formField
-
+    const { submitForm } = useFormikContext()
     const today = new Date()
     const minDateString = today.toISOString().split('T')[0]
-
-    const { submitForm } = useFormikContext()
-
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-   
-   useEffect(() => {
-      const handleResize = () => {
-         setWindowWidth(window.innerWidth)
-      }
-
-      window.addEventListener('resize', handleResize)
-
-      return () => {
-         window.removeEventListener('resize', handleResize)
-      }
-   }, [])
 
    const handleSubmit = () => {
     submitForm()
    }
-
 
    return (
     <>
@@ -37,7 +20,7 @@ const SimpleSearch: React.FC = () => {
             <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
                Enter some details about the flight
             </Text>
-            <Flex direction={windowWidth > 850 ? 'row' : 'column'} justifyContent='space-between' gap={windowWidth > 850 ? '1%' : '10%'}>
+            <Flex direction='row' justifyContent='space-between' gap='1%'>
                <Flex direction='column' w='stretch'>
                   <FormLabel>From:</FormLabel>
                   <Field as={Input} id={start.name} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} name={start.name} placeholder={"Enter a city or aiport"} type='input'/>
