@@ -1,4 +1,3 @@
-#from flask import Blueprint
 from ..extensions import db
 from datetime import datetime
 
@@ -19,7 +18,6 @@ class SimpleSearch(db.Model):
     price = db.Column(db.Integer, nullable=False)
     layover = db.Column(db.String, nullable=False)
     url = db.Column(db.String, nullable=False)
-    #add layover info if its feasible
 
     def __repr__(self):
         return  f"Search info: Searched on: {self.dtSearched}. flight from {self.start} to {self.end} on {self.date} using {self.airline} for ${self.price}.)"

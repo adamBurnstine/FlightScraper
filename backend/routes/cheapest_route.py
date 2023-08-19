@@ -1,5 +1,4 @@
-from flask import Blueprint, abort, jsonify, request
-from sqlalchemy import desc
+from flask import Blueprint, abort, request
 from ..extensions import db
 from datetime import date, datetime, timedelta
 from ..models.CheapestRoute import Search, Destination, Flight, Route, flight_route
@@ -8,7 +7,6 @@ from bs4 import BeautifulSoup
 import asyncio
 import queue
 
-
 cheapest_route = Blueprint('cheapest_route', __name__)
 
 @cheapest_route.route('/', methods=['GET', 'POST'])
@@ -16,7 +14,6 @@ def index():
     if (request.method == 'GET'):
         return 'Ok'
     if (request.method == 'POST'):
-
         try:
             #recieve input
             user_input = request.get_json()
@@ -25,13 +22,12 @@ def index():
             #validate data
             start_date_time = string_to_datetime(startDate)
             startDate = string_to_date(startDate)
-            endDate = string_to_date(endDate)
-            tripLength = endDate - startDate
+            end_date = string_to_date(endDate)
+            tripLength = end_date - startDate
             tot_days = 0
             locations = []
             min_num_days = tripLength.days
-
-            searchInfo = Search(start_loc=startLoc, start_date=startDate, end_date=endDate)
+            searchInfo = Search(start_loc=startLoc, start_date=startDate, end_date=end_date)
             db.session.add(searchInfo)
 
             for d in destinations:
@@ -40,7 +36,6 @@ def index():
                 db.session.add(dst)
                 locations.append(dst)
                 min_num_days = min(min_num_days, int(d['numDays']))
-            
             if (tot_days > tripLength.days):
                 raise RuntimeError("Trip not long enough for number of days entered at each destination")
             if (tripLength.days < 3):
@@ -49,10 +44,12 @@ def index():
                 raise RuntimeError("Trip too long. Maximum trip length is 365 days")
             
             #Generate URLs
-            urlQ = generate_urls(locations, startLoc, startDate, endDate, min_num_days)
+            urlQ = generate_urls(locations, startLoc, startDate, end_date, min_num_days)
             searchInfo.num_flights = urlQ.qsize()
+
             #Scrape URLs and add flights to db
             asyncio.run(scrape_all(urlQ, searchInfo))
+
             #Create routes
             flex = tripLength.days - tot_days
             print("Generating routes")
@@ -81,7 +78,7 @@ def index():
                             if f['date'] < fl['date']:
                                 flights.insert(i, f)
                                 break
-                
+
                 pathInfo = []
                 for i, f in enumerate(flights): 
                     if i == 0:
@@ -95,10 +92,12 @@ def index():
         except RuntimeError as e:
             print(e)
             abort(400)
+        # except Exception as e:
+        #     print(e)
+        #     abort(500)
         
 def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, search_info, curr_price):
     if flexibility == 0 and len(path) == 0:
-        #route.append(f"from {curr_loc} to {start_loc} on {curr_date}") #FIXME append the flight details
         flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == start_loc).first()
         route.append(flight)
         price = curr_price + flight.price
@@ -106,14 +105,12 @@ def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, se
         for f in route:
             rte.flights.append(f)
         db.session.add(rte)
-        #print(route, "\n\n")
     
     else:
         if flexibility > 0 and route != []:
             generate_routes(path, curr_date + timedelta(days=1), flexibility - 1, route, curr_loc, start_loc, search_info, curr_price)
         if len(path) != 0:
             new_route = route[:]
-            #new_route.append(f"from {curr_loc} to {path[0].location} on {curr_date}") #FIXME
             flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == path[0].location).first()
             new_route.append(flight)
             new_price = curr_price + flight.price
@@ -124,7 +121,6 @@ def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, se
 
 def generate_paths(dsts, l, r, start_loc, flexibility, start_date, search_info):
     if l == r:
-        #print(dsts)
         generate_routes(dsts, start_date, flexibility, [], start_loc, start_loc, search_info, 0)
     else: 
         for i in range(l, r):
@@ -134,27 +130,21 @@ def generate_paths(dsts, l, r, start_loc, flexibility, start_date, search_info):
 
 def generate_urls(places, start_loc, start_date, end_date, min_num_days):
     urlQ = queue.Queue(0)
+    curr_date = start_date + timedelta(days=min_num_days)
     for p in places:
         urlQ.put({'search_from': start_loc, 'search_to': p.location, 'url': f"https://www.google.com/travel/flights?q=One%20way%20flights%20to%20{p.location}%20from%20{start_loc}%20on%20{start_date}"})
-        #urlQ.put(f"From: {startLoc}; To: {p.location}; On: {startDate}")
     for p in places:
         urlQ.put({'search_from': p.location, 'search_to': start_loc, 'url':f"https://www.google.com/travel/flights?q=One%20way%20flights%20to%20{start_loc}%20from%20{p.location}%20on%20{end_date}"})
-        #urlQ.put(f"From: {p.location}; To: {startLoc}; On: {endDate}")
-    curr_date = start_date + timedelta(days=min_num_days)
-    #print(curr_date)
     while (end_date - curr_date).days >= min_num_days:
         for i, p in enumerate(places): 
             for j, p2 in enumerate(places):
                 if i == j:
                     continue
                 urlQ.put({'search_from': p.location, 'search_to': p2.location, 'url':f"https://www.google.com/travel/flights?q=One%20way%20flights%20to%20{p2.location}%20from%20{p.location}%20on%20{curr_date}"})
-                #urlQ.put(f"From: {p.location}; To: {p2.location}; On: {curr_date}")
         curr_date += timedelta(days=1)
 
     print('URLs generated!')
     return urlQ
-    # while urlQ.empty() != True:
-    #   print(urlQ.get()['url'])
 
 async def scrape_all(urlQ: queue.Queue, search_info):
     print("scraping")
@@ -175,20 +165,20 @@ async def scrape_all(urlQ: queue.Queue, search_info):
 
         dpt_time = flight_tag.find("div", class_="wtdjmc YMlIz ogfYpf tPgKwe").text.replace('\u202f', '')     # Departure time and date 
         arr_time = flight_tag.find("div", class_="XWcVob YMlIz ogfYpf tPgKwe").text.replace('\u202f', '')     # Arrival time and date
-        airline = flight_tag.find("span", class_="h1fkLb").span.text                                         # Airline
-        duration = flight_tag.find("div", class_="gvkrdb AdWm1c tPgKwe ogfYpf").text                         # Duration
+        airline = flight_tag.find("span", class_="h1fkLb").span.text                                          # Airline
+        duration = flight_tag.find("div", class_="gvkrdb AdWm1c tPgKwe ogfYpf").text                          # Duration
         dpt_airport = flight_tag.find("div", class_="G2WY5c sSHqwe ogfYpf tPgKwe").text                       # Departure airport
         arr_airport = flight_tag.find("div", class_="c8rWCd sSHqwe ogfYpf tPgKwe").text                       # Arrival Airport
-        layover = flight_tag.find("span", class_="rGRiKd").text                                              # Layover information #FIXME add layover information if I find a way that doesn't require too much time to execute
-        price = flight_tag.find("div", class_=["YMlIz FpEdX", "YMlIz FpEdX jLMuyc"]).find("span").text       # Price #FIXME make sure this continues to work for a while
+        layover = flight_tag.find("span", class_="rGRiKd").text                                               # Layover information
+        price = flight_tag.find("div", class_=["YMlIz FpEdX", "YMlIz FpEdX jLMuyc"]).find("span").text        # Price
         price = int(price[1:].replace(',', ''))
         search_from = url_info['search_from']
         search_to = url_info['search_to']
         date = string_to_date(url[-10:])
 
         await asyncio.gather(
-        page.waitForNavigation({'waitUntil': 'networkidle2'}),
-        page.click('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > ul > li'),
+            page.waitForNavigation({'waitUntil': 'networkidle2'}),
+            page.click('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > ul > li')
         )
         flight_url = page.url  #URL to see more info about flight
 
@@ -200,7 +190,6 @@ async def scrape_all(urlQ: queue.Queue, search_info):
     print("Successfully scraped!")
     await browser.close()
     return
-
 
 def string_to_date(str):
     year = int(str[:4])

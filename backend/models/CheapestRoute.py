@@ -16,12 +16,9 @@ class Search(db.Model):
 
     def __repr__(self):
         out = f"Date Searched: {self.date_searched}; Start/End location: {self.start_loc}; Start Date: {self.start_date}; End Date: {self.end_date}; Destinations: {self.destinations}"
-        if type(self.num_flights) != type(None): 
-            out += f"; Num flights searched: {self.num_flights}"
-        if type(self.num_routes) != type(None):
-            out += f"; Num routes searched: {self.num_routes}"
-        if type(self.avg_route_price) != type(None): 
-            out += f"; Average route price: {self.avg_route_price}"
+        if type(self.num_flights) != type(None):  out += f"; Num flights searched: {self.num_flights}"
+        if type(self.num_routes) != type(None): out += f"; Num routes searched: {self.num_routes}"
+        if type(self.avg_route_price) != type(None): out += f"; Average route price: {self.avg_route_price}"
         return out
 
 class Destination(db.Model):
@@ -32,8 +29,7 @@ class Destination(db.Model):
     search_date_searched = db.Column(db.DateTime, db.ForeignKey('search.date_searched'))
 
     def __repr__(self):
-        return f"Destination: {self.location}"
-        #return f"Destination: {self.location}; # of Days: {self.num_days}; Search: {self.search_date_searched}"
+        return f"Destination: {self.location}; # of Days: {self.num_days}"
 
 flight_route = db.Table('flight_route', 
                         db.Column('flight_id', db.Integer, db.ForeignKey('flight.id')), 
@@ -72,5 +68,3 @@ class Route(db.Model):
 
     def __repr__(self):
         return f"\nID: {self.id}; price: {self.price}; Flights: {self.flights}; Search: {self.search_date_searched}"
-
-

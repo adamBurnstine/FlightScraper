@@ -1,7 +1,6 @@
-from flask import Blueprint, abort, jsonify, make_response, request
+from flask import Blueprint, abort, jsonify, request
 from sqlalchemy import desc
 from ..extensions import db
-from datetime import date, datetime
 from ..models.SimpleSearch import SimpleSearch
 import asyncio
 from pyppeteer import launch
@@ -15,20 +14,15 @@ def index():
         return 'Ok'
     if (request.method == 'POST'):
         user_input = request.get_json()
-
         try:
             url = f"https://www.google.com/travel/flights?q=One%20way%20flights%20to%20{user_input['end']}%20from%20{user_input['start']}%20on%20{user_input['date']}"
             flightInfo = asyncio.run(scrape(url))
-            searchInfo = SimpleSearch(start = user_input['start'], end=user_input['end'], 
-                                      date=user_input['date'], airline=flightInfo['airline'], 
-                                      dptAirport=flightInfo['dptAirport'], arrAirport=flightInfo['arrAirport'], 
-                                      dptTime=flightInfo['dptTime'], arrTime=flightInfo['arrTime'], 
-                                      duration=flightInfo['duration'], price=flightInfo['price'], 
-                                      layover=flightInfo['layover'], url=flightInfo['flight_URL'])
+            searchInfo = SimpleSearch(start = user_input['start'], end=user_input['end'], date=user_input['date'], airline=flightInfo['airline'], 
+                                      dptAirport=flightInfo['dptAirport'], arrAirport=flightInfo['arrAirport'], dptTime=flightInfo['dptTime'], arrTime=flightInfo['arrTime'], 
+                                      duration=flightInfo['duration'], price=flightInfo['price'], layover=flightInfo['layover'], url=flightInfo['flight_URL'])
             db.session.add(searchInfo)
             db.session.commit()
             print("uploaded to database")
-            print(searchInfo.url)
             return flightInfo
         except RuntimeError as e:
             print(e)
@@ -49,7 +43,6 @@ def index():
             db.session.rollback()
             abort(400)
 
-
 async def scrape(url):
     browser = await launch(handleSIGINT=False, handleSIGTERM=False, handleSIGHUP=False)
     page = await browser.newPage()
@@ -67,24 +60,21 @@ async def scrape(url):
     duration = flightTag.find("div", class_="gvkrdb AdWm1c tPgKwe ogfYpf").text                         # Duration
     dptAirport = flightTag.find("div", class_="G2WY5c sSHqwe ogfYpf tPgKwe").text                       # Departure airport
     arrAirport = flightTag.find("div", class_="c8rWCd sSHqwe ogfYpf tPgKwe").text                       # Arrival Airport
-    layover = flightTag.find("span", class_="rGRiKd").text                                              # Layover information #FIXME add layover information if I find a way that doesn't require too much time to execute
-    price = flightTag.find("div", class_=["YMlIz FpEdX", "YMlIz FpEdX jLMuyc"]).find("span").text       # Price #FIXME make sure this continues to work for a while
+    layover = flightTag.find("span", class_="rGRiKd").text                                              # Layover information
+    price = flightTag.find("div", class_=["YMlIz FpEdX", "YMlIz FpEdX jLMuyc"]).find("span").text       # Price
     price = int(price[1:])
 
     await asyncio.gather(
         page.waitForNavigation({'waitUntil': 'networkidle2'}),
         page.click('body > c-wiz > div > div > c-wiz > div > c-wiz > div > div > div > ul > li'),
     )
-
     flight_url = page.url  #URL to see more info about flight
 
     return {'dptTime': dptTime, 'arrTime': arrTime, 'airline': airline, 'duration': duration, 'dptAirport': dptAirport, 'arrAirport': arrAirport, 'layover': layover, 'price': price, 'flight_URL': flight_url}
 
-
 @simple_search.route('/history', methods=['GET'])
 def history():
     searches = SimpleSearch.query.order_by(desc('dtSearched')).limit(50)
-    #print(searches)
     history = []
     for search in searches:
         print(search.dtSearched)
