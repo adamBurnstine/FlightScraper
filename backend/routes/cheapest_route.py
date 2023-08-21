@@ -1,6 +1,8 @@
 from flask import Blueprint, abort, request
 from ..extensions import db
 from datetime import date, datetime, timedelta
+from ..helpers.return_cheapest_search import format_return
+from ..helpers.generate_routes import generate_paths
 from ..models.CheapestRoute import Search, Destination, Flight, Route, flight_route
 from pyppeteer import launch
 from bs4 import BeautifulSoup
@@ -18,37 +20,11 @@ def toggle_favorite(route_id):
         route.favorited = False
     else:
         route.favorited = True
+
     db.session.commit()
     searchInfo = route.search
-    #Format return 
-    ret = {'numRoutes': searchInfo.num_routes, 'numFlights': searchInfo.num_flights, 'avgPrice': searchInfo.avg_route_price, 'topRoutes': []}
-    results = Route.query.filter_by(search=searchInfo).order_by('price').all()
-    for i, r in enumerate(results):
-        if i > 4: break
-        flights = []
-        for f in r.flights:
-            f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 'date': f.date, 
-                    'airline': f.airline, 'duration': f.duration, 'layover': f.layover, 'price': f.price, 'flightURL': f.url, 'searchFrom': f.search_from, 'searchTo': f.search_to}
-            if len(flights) == 0 or f['date'] > flights[-1]['date']:
-                flights.append(f)
-            else:
-                for i, fl in enumerate(flights):
-                    if f['date'] < fl['date']:
-                        flights.insert(i, f)
-                        break
 
-        pathInfo = []
-        for i, f in enumerate(flights): 
-            if i == 0:
-                pathInfo.append({'location': f['searchFrom'], 'numDays': 0})
-            else:
-                pathInfo.append({'location': f['searchFrom'], 'numDays': (f['date'] - flights[i - 1]['date']).days})
-        rte = {'price': r.price, 'flights': flights, 'path': pathInfo, 'favorited':r.favorited, 'id': r.id}
-        ret['topRoutes'].append(rte)
-
-    return ret
-
-
+    return format_return(searchInfo)
 
 @cheapest_route.route('/', methods=['GET', 'POST'])
 def index():
@@ -103,71 +79,15 @@ def index():
             searchInfo.avg_route_price = tot_price / searchInfo.num_routes
             db.session.commit()
 
-            #Format return 
-            ret = {'numRoutes': searchInfo.num_routes, 'numFlights': searchInfo.num_flights, 'avgPrice': searchInfo.avg_route_price, 'topRoutes': []}
-            results = Route.query.filter_by(search=searchInfo).order_by('price').all()
-            for i, r in enumerate(results):
-                if i > 4: break
-                flights = []
-                for f in r.flights:
-                    f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 'date': f.date, 
-                         'airline': f.airline, 'duration': f.duration, 'layover': f.layover, 'price': f.price, 'flightURL': f.url, 'searchFrom': f.search_from, 'searchTo': f.search_to}
-                    if len(flights) == 0 or f['date'] > flights[-1]['date']:
-                        flights.append(f)
-                    else:
-                        for i, fl in enumerate(flights):
-                            if f['date'] < fl['date']:
-                                flights.insert(i, f)
-                                break
-
-                pathInfo = []
-                for i, f in enumerate(flights): 
-                    if i == 0:
-                        pathInfo.append({'location': f['searchFrom'], 'numDays': 0})
-                    else:
-                        pathInfo.append({'location': f['searchFrom'], 'numDays': (f['date'] - flights[i - 1]['date']).days})
-                rte = {'price': r.price, 'flights': flights, 'path': pathInfo, 'favorited':r.favorited, 'id': r.id}
-                ret['topRoutes'].append(rte)
-
-            return ret
+            #Format return and return
+            return format_return(searchInfo)
+        
         except RuntimeError as e:
             print(e)
             abort(400)
-        # except Exception as e:
-        #     print(e)
-        #     abort(500)
-        
-def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, search_info, curr_price):
-    if flexibility == 0 and len(path) == 0:
-        flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == start_loc).first()
-        route.append(flight)
-        price = curr_price + flight.price
-        rte = Route(price=price, search=search_info)
-        for f in route:
-            rte.flights.append(f)
-        db.session.add(rte)
-    
-    else:
-        if flexibility > 0 and route != []:
-            generate_routes(path, curr_date + timedelta(days=1), flexibility - 1, route, curr_loc, start_loc, search_info, curr_price)
-        if len(path) != 0:
-            new_route = route[:]
-            flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == path[0].location).first()
-            new_route.append(flight)
-            new_price = curr_price + flight.price
-            new_date = curr_date + timedelta(days=int(path[0].num_days))
-            new_loc = path[0].location
-            new_path = path[1:]
-            generate_routes(new_path, new_date, flexibility, new_route, new_loc, start_loc, search_info, new_price)
-
-def generate_paths(dsts, l, r, start_loc, flexibility, start_date, search_info):
-    if l == r:
-        generate_routes(dsts, start_date, flexibility, [], start_loc, start_loc, search_info, 0)
-    else: 
-        for i in range(l, r):
-            dsts[l], dsts[i] = dsts[i], dsts[l]
-            generate_paths(dsts, l+1, r, start_loc, flexibility, start_date, search_info)
-            dsts[l], dsts[i] = dsts[i], dsts[l]
+        except Exception as e:
+            print(e)
+            abort(500)
 
 def generate_urls(places, start_loc, start_date, end_date, min_num_days):
     urlQ = queue.Queue(0)

@@ -103,6 +103,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                         const metrics: MetricsType = { avgPrice, numFlights, numRoutes }
                         setTopRoutes(topRoutes)
                         setSearchMetrics(metrics)
+                        setShowResults(true)
                         setError(false)
                     }).catch(err => {
                         console.log(err)
@@ -123,14 +124,14 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                     </Text>
                 </Flex>
             )}
-            {!showResults && searchMetrics && (
+            {showResults && searchMetrics && (
                 <Flex direction='column'>
                     <Text textAlign='center' mb='4%' fontSize={['16px', '16px', '16px', '20px']}>
                         {`Searched ${searchMetrics.numFlights} flights, and calculated ${searchMetrics.numRoutes} routes. On average, a cheap flight given the search would cost around $${Math.round(searchMetrics.avgPrice * 100) / 100}.`}
                     </Text>
                 </Flex>
             )}
-            {!showResults && topRoutes && (
+            {showResults && topRoutes && (
                 <Flex direction='column' mx='10%'>
                     <Heading textAlign='left'>Search Results:</Heading>
                     <Accordion allowToggle w='stretch' style={{margin: '0 auto', marginTop: '40px', marginBottom: '40px',}}>
@@ -165,7 +166,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                                                 {route.favorited ? (
                                                     <Image src={favorited} h='25px' onClick={(e:any) => toggleFavorite(route.id)}/>
                                                 ) : (
-                                                    <Image src={unfavorited} h='20px' onClick={(e:any) => toggleFavorite(route.id)}/>
+                                                    <Image src={unfavorited} h='25px' onClick={(e:any) => toggleFavorite(route.id)}/>
                                                 )}
                                                 {isExpanded ? (
                                                     <Image src={minus} ml='11px' h={['20px', '20px', '27px', '27px']} />
@@ -307,7 +308,10 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                 alignSelf='center'
                 textColor='white'
                 fontWeight={600}
-                onClick={() => setShowForm(true)}
+                onClick={() => {
+                    setShowResults(false)
+                    setShowForm(true)
+                }}
                 fontSize='16px'>
                     New Search
                 </Button>

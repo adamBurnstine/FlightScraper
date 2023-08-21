@@ -6,7 +6,6 @@ import unfavorited from '../images/Favorite-Unfilled.svg'
 import plus from '../images/minus.svg'
 import minus from '../images/minus.svg'
 
-
 interface RouteType {
     flights: FlightInfoType[],
     path: DestinationType[],
@@ -35,6 +34,7 @@ interface FlightInfoType { //Flights is an array of flight info type
 
 const SavedRoutes: React.FC = (): JSX.Element => {
     const [savedRoutes, setSavedRoutes] = useState<RouteType[]>()
+
     useEffect(() => {
         fetch("/saved_routes").then(response => response.json()).then(data => {
             const { savedRoutes } = data
@@ -62,7 +62,6 @@ const SavedRoutes: React.FC = (): JSX.Element => {
         ),200)
     } 
 
-
     return (
         <>
         <Flex align='center' justifyContent='center' h='200%' direction='column'>
@@ -77,6 +76,11 @@ const SavedRoutes: React.FC = (): JSX.Element => {
         </Flex>
          <Flex direction='column' mx='10%'>
          <Heading textAlign='left'>Search Results:</Heading>
+         {savedRoutes?.length === 0 && (
+            <Heading textColor='red' fontWeight='400' textAlign='center' mb='20%' mt='5%'>
+                No saved routes. Create searches and save routes,
+            </Heading>
+         )}
          <Accordion allowToggle w='stretch' style={{margin: '0 auto', marginTop: '40px', marginBottom: '40px',}}>
              {savedRoutes?.map((route, index) => (
                  <AccordionItem w='stretch'>
@@ -112,7 +116,7 @@ const SavedRoutes: React.FC = (): JSX.Element => {
                                             toggleFavorite(route.id)}
                                          }/>
                                      ) : (
-                                         <Image src={unfavorited} h='20px' onClick={(e:any) => {
+                                         <Image src={unfavorited} h='25px' onClick={(e:any) => {
                                             toggleFavorite(route.id)}
                                          }/>
                                      )}
