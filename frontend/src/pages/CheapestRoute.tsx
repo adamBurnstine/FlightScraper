@@ -7,11 +7,15 @@ import CRForm from '../components/Forms/CheapestRoute/CRForm'
 import minus from '../images/minus.svg'
 import plus from '../images/plus.svg'
 import logo from '../images/FlightScraperLogo.svg'
+import favorited from '../images/Favorite-Filled.svg'
+import unfavorited from '../images/Favorite-Unfilled.svg'
 
 interface RouteType {
     flights: FlightInfoType[],
     path: DestinationType[],
     price: number,
+    favorited: boolean,
+    id: number,
 }
 
 interface FlightInfoType { //Flights is an array of flight info type
@@ -44,7 +48,29 @@ const CheapestRoute: React.FC = (): JSX.Element => {
     const [error, setError] = useState<boolean>(false)
     const [topRoutes, setTopRoutes] = useState<RouteType[] | null>()
     const [searchMetrics, setSearchMetrics] = useState<MetricsType>()
+    const [showResults, setShowResults] = useState<boolean>(false)
 
+    const toggleFavorite = async (id: number) => {
+        console.log(id)
+        setTimeout(async () => (
+            await fetch(`/cheapest_route/toggle_favorite/${id}`, {
+                method:"POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(id)
+            }).then(response => response.json()).then(data => {
+                const { avgPrice, numFlights, numRoutes, topRoutes } = data
+                const metrics: MetricsType = { avgPrice, numFlights, numRoutes }
+                setTopRoutes(topRoutes)
+                setSearchMetrics(metrics)
+                setError(false)
+            }).catch((err) => {
+                console.log(err)
+            })
+        ),200)
+    } 
+    
     return (
         <Flex direction='column' mb='30%'>
             <Flex align='center' justifyContent='center' h='200%' direction='column'>
@@ -60,6 +86,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
             <Formik initialValues={initialValuesCR} validationSchema={validationSchemaCR} onSubmit={(values, { setSubmitting, resetForm }) => {
                 setTimeout(async () => {
                     setShowForm(false)
+                    setShowResults(false)
                     setIsLoading(true)
                     resetForm()              
                     console.log(values)
@@ -96,14 +123,14 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                     </Text>
                 </Flex>
             )}
-            {searchMetrics && (
+            {!showResults && searchMetrics && (
                 <Flex direction='column'>
                     <Text textAlign='center' mb='4%' fontSize={['16px', '16px', '16px', '20px']}>
                         {`Searched ${searchMetrics.numFlights} flights, and calculated ${searchMetrics.numRoutes} routes. On average, a cheap flight given the search would cost around $${Math.round(searchMetrics.avgPrice * 100) / 100}.`}
                     </Text>
                 </Flex>
             )}
-            {topRoutes && (
+            {!showResults && topRoutes && (
                 <Flex direction='column' mx='10%'>
                     <Heading textAlign='left'>Search Results:</Heading>
                     <Accordion allowToggle w='stretch' style={{margin: '0 auto', marginTop: '40px', marginBottom: '40px',}}>
@@ -132,9 +159,14 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                                                 </Text>
                                             </Flex>
                                             <Flex color='#1E1E1E' textAlign='right' justifyContent='right' fontWeight={['700', '700', '600', '600']} my='10px' w='15%' fontSize={['16px', '16px', '20px', '20px']}>
-                                                <Text>
+                                                <Text mr='10%'>
                                                     {`$${route.price}`}
                                                 </Text>      
+                                                {route.favorited ? (
+                                                    <Image src={favorited} h='25px' onClick={(e:any) => toggleFavorite(route.id)}/>
+                                                ) : (
+                                                    <Image src={unfavorited} h='20px' onClick={(e:any) => toggleFavorite(route.id)}/>
+                                                )}
                                                 {isExpanded ? (
                                                     <Image src={minus} ml='11px' h={['20px', '20px', '27px', '27px']} />
                                                     ) : (

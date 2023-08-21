@@ -11,7 +11,8 @@ const Header: React.FC = (): JSX.Element | null => {
         {title: 'Home', path: '/'},
         {title: 'Single Flight Search', path: '/single_flight'},
         {title: 'Single Flight Search History', path: '/single_flight/history'},
-        {title: 'Cheapest Route Search', path: '/cheapest_route'}
+        {title: 'Cheapest Route Search', path: '/cheapest_route'},
+        {title: 'Saved Routes', path: '/saved_routes'}
     ]
 
     const handleLogoClick= () => {

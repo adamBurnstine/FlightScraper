@@ -63,6 +63,7 @@ class Route(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     price = db.Column(db.Integer, nullable=False)
+    favorited = db.Column(db.Boolean, nullable=False, default=False)
     search_date_searched = db.Column(db.DateTime, db.ForeignKey('search.date_searched'))
     flights = db.relationship('Flight', secondary=flight_route, backref='routes')
 
