@@ -15,10 +15,7 @@ def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, se
     if flexibility == 0 and len(path) == 0:
         flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == start_loc).first()
         route.append(flight)
-        price = curr_price + flight.price
-        rte = Route(price=price, search=search_info)
-        for f in route:
-            rte.flights.append(f)
+        rte = Route(price=(curr_price + flight.price), search=search_info, flights=route)
         db.session.add(rte)
     
     else:
@@ -28,8 +25,4 @@ def generate_routes(path, curr_date, flexibility, route, curr_loc, start_loc, se
             new_route = route[:]
             flight = Flight.query.filter(Flight.search == search_info, Flight.date == curr_date, Flight.search_from == curr_loc, Flight.search_to == path[0].location).first()
             new_route.append(flight)
-            new_price = curr_price + flight.price
-            new_date = curr_date + timedelta(days=int(path[0].num_days))
-            new_loc = path[0].location
-            new_path = path[1:]
-            generate_routes(new_path, new_date, flexibility, new_route, new_loc, start_loc, search_info, new_price)
+            generate_routes(path[1:], curr_date + timedelta(days=int(path[0].num_days)), flexibility, new_route, path[0].location, start_loc, search_info,(curr_price + flight.price))

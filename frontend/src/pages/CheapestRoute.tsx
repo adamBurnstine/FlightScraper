@@ -88,7 +88,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                     setShowForm(false)
                     setShowResults(false)
                     setIsLoading(true)
-                    resetForm()              
+                    //resetForm()              
                     console.log(values)
 
                     await fetch("/cheapest_route", {

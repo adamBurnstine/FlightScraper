@@ -4,7 +4,6 @@ def format_return():
     ret = {'savedRoutes': []}
     results = Route.query.filter_by(favorited=True).all()
     for i, r in enumerate(results):
-        if i > 4: break
         flights = []
         for f in r.flights:
             f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 'date': f.date, 
