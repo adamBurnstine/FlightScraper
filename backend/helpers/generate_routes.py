@@ -3,8 +3,7 @@ from ..models.CheapestRoute import Flight, Route
 from datetime import timedelta
 
 def generate_paths(dsts, l, r, start_loc, flexibility, start_date, search_info):
-    if l == r:
-        generate_routes(dsts, start_date, flexibility, [], start_loc, start_loc, search_info, 0)
+    if l == r: generate_routes(dsts, start_date, flexibility, [], start_loc, start_loc, search_info, 0)
     else: 
         for i in range(l, r):
             dsts[l], dsts[i] = dsts[i], dsts[l]

@@ -12,11 +12,7 @@ def index():
 @saved_routes.route('/toggle_favorite/<id>', methods=['POST'])
 def toggle_favorite(id):
     route = Route.query.filter_by(id=id).first()
-
-    if route.favorited:
-        route.favorited = False
-    else:
-        route.favorited = True
+    route.favorited = not route.favorited
 
     db.session.commit()
     return format_return()

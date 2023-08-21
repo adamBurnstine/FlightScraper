@@ -1,13 +1,11 @@
 from ..helpers.string_to_date import string_to_date
 from ..models.CheapestRoute import Flight
 from ..extensions import db
-
 from bs4 import BeautifulSoup
 from pyppeteer import launch
 import asyncio
 import queue
-
-
+ 
 async def scrape_all(urlQ: queue.Queue, search_info):
     print("scraping")
     num_urls = urlQ.qsize()

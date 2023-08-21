@@ -6,9 +6,10 @@ def format_return(searchInfo):
     for i, r in enumerate(results):
         if i > 4: break
         flights = []
-        for f in r.flights:
-            f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 'date': f.date, 
-                    'airline': f.airline, 'duration': f.duration, 'layover': f.layover, 'price': f.price, 'flightURL': f.url, 'searchFrom': f.search_from, 'searchTo': f.search_to}
+        for f in r.flights: 
+            f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 
+                 'date': f.date, 'airline': f.airline, 'duration': f.duration, 'layover': f.layover, 'price': f.price, 
+                 'flightURL': f.url, 'searchFrom': f.search_from, 'searchTo': f.search_to}
             if len(flights) == 0 or f['date'] > flights[-1]['date']:
                 flights.append(f)
             else:
@@ -27,5 +28,3 @@ def format_return(searchInfo):
         ret['topRoutes'].append(rte)
 
     return ret
-
-

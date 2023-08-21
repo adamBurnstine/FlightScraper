@@ -10,19 +10,12 @@ import asyncio
 
 cheapest_route = Blueprint('cheapest_route', __name__)
 
-@cheapest_route.route('/toggle_favorite/<route_id>', methods=['POST'])
-def toggle_favorite(route_id):
-    route_id=int(route_id)
-    route = Route.query.filter_by(id =route_id).first()
-    print(route_id)
-    if route.favorited: 
-        route.favorited = False
-    else:
-        route.favorited = True
-
+@cheapest_route.route('/toggle_favorite/<id>', methods=['POST'])
+def toggle_favorite(id):
+    route = Route.query.filter_by(id=int(id)).first()
+    route.favorited = not route.favorited
     db.session.commit()
     searchInfo = route.search
-    
     return format_return(searchInfo)
 
 @cheapest_route.route('/', methods=['GET', 'POST'])

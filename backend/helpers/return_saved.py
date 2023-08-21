@@ -5,7 +5,7 @@ def format_return():
     results = Route.query.filter_by(favorited=True).all()
     for i, r in enumerate(results):
         flights = []
-        for f in r.flights:
+        for f in r.flights: 
             f = {'dptAirport': f.dpt_airport, 'arrAirport': f.arr_airport, 'dptTime': f.dpt_time, 'arrTime': f.arr_time, 'date': f.date, 
                     'airline': f.airline, 'duration': f.duration, 'layover': f.layover, 'price': f.price, 'flightURL': f.url, 'searchFrom': f.search_from, 'searchTo': f.search_to}
             if len(flights) == 0 or f['date'] > flights[-1]['date']:
