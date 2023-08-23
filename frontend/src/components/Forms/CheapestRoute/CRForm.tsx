@@ -33,7 +33,7 @@ const CRForm: React.FC = () => {
         <Form onSubmit={handleSubmit}>
             <Flex direction='column' mx='20%'>
                 <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
-                    Enter some details about the trip.
+                    Enter some details about your trip.
                 </Text>
                 <Flex direction='row' justifyContent='space-betwen' gap='1%' mb='3%'>
                     <Flex direction='column' w='stretch'>

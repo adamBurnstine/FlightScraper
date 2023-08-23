@@ -17,7 +17,7 @@ const SimpleSearch: React.FC = () => {
       <Form onSubmit={handleSubmit}>
          <Flex direction='column' mx='20%'>
             <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
-               Enter some details about the flight
+               Enter some details about your flight
             </Text>
             <Flex direction='row' justifyContent='space-between' gap='1%'>
                <Flex direction='column' w='stretch'>
