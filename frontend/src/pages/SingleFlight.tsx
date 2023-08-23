@@ -40,7 +40,7 @@ const SimpleSearch: React.FC = (): JSX.Element => {
           Single flight search
         </Heading>
         <Text mt='1%' fontSize={['20px', '20px', '24px', '32px']} mx='15%' textAlign='center' fontWeight='400' textColor='darkslategray'>
-          Enter a start and end destination and the date you wish to travel. This application will then scrape google flights and return the best option for you with a link to get more details or purchase the flight.
+          Enter some details about your flight
         </Text>
         <Flex direction='row' align='center' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
       </Flex>

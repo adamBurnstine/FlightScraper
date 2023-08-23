@@ -79,7 +79,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                     Cheapest Route Search
                 </Heading>
                 <Text mt='1%' fontSize={['20px', '20px', '24px', '32px']} mx='15%' textAlign='center' fontWeight='400' textColor='darkslategray'>
-                    Enter the start and end date of the trip, and the minimum length of time you want to spend at each destination. The cheapest routes will then be displayed and links for more information or to purchase the will appear.
+                    Enter the dates of your trip to get started. Then add each destination city, along with the minimum number of days you’d like to spend there. The more days you leave unspecified, the more flexibility Flight Scraper has to save you money!
                 </Text>
                 <Flex direction='row' align='center' justifyContent='center' w='80%' h='2px' bg='#C7C9D9' my='3%'/>
             </Flex>

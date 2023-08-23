@@ -37,7 +37,7 @@ const CRForm: React.FC = () => {
                 </Text>
                 <Flex direction='row' justifyContent='space-betwen' gap='1%' mb='3%'>
                     <Flex direction='column' w='stretch'>
-                        <FormLabel>Starting/Ending Location:</FormLabel>
+                        <FormLabel>Starting Location:</FormLabel>
                         <Field as={Input} type='input' placeholder='Enter a city or airport' style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} id={startLoc.name} name={startLoc.name}/>
                         <Flex color='red.500' fontSize='xs'>
                             <ErrorMessage name={startLoc.name} />
