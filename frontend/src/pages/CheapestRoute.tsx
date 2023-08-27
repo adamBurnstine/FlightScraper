@@ -126,8 +126,8 @@ const CheapestRoute: React.FC = (): JSX.Element => {
             )}
             {showResults && searchMetrics && (
                 <Flex direction='column'>
-                    <Text textAlign='center' mb='4%' fontSize={['16px', '16px', '16px', '20px']}>
-                        {`Searched ${searchMetrics.numFlights} flights, and calculated ${searchMetrics.numRoutes} routes. On average, a cheap flight given the search would cost around $${Math.round(searchMetrics.avgPrice * 100) / 100}.`}
+                    <Text textAlign='center' fontSize={['16px', '16px', '16px', '20px']}>
+                        {`Searched ${searchMetrics.numFlights} flights, and calculated ${searchMetrics.numRoutes} routes. The average itinerary would cost around $${Math.round(searchMetrics.avgPrice * 100) / 100}.`}
                     </Text>
                 </Flex>
             )}
