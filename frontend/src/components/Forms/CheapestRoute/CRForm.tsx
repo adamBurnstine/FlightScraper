@@ -32,27 +32,27 @@ const CRForm: React.FC = () => {
     return (
         <Form onSubmit={handleSubmit}>
             <Flex direction='column' mx='20%'>
-                <Text textAlign='center' fontSize={['30px', '30px', '40px', '40px']} fontWeight='600' mb='5%'>
+                <Text textAlign='center' fontSize={['20px', '20px', '30px', '40px']} fontWeight='600' mb='5%'>
                     Enter some details about your trip.
                 </Text>
                 <Flex direction='row' justifyContent='space-betwen' gap='1%' mb='3%'>
                     <Flex direction='column' w='stretch'>
                         <FormLabel>Starting Location:</FormLabel>
-                        <Field as={Input} type='input' placeholder='Enter a city or airport' style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} id={startLoc.name} name={startLoc.name}/>
+                        <Field as={Input} type='input' placeholder='Enter a city or airport' border='1px solid black' borderRadius='8px' padding='8px' id={startLoc.name} name={startLoc.name}/>
                         <Flex color='red.500' fontSize='xs'>
                             <ErrorMessage name={startLoc.name} />
                         </Flex>
                     </Flex>
                     <Flex direction='column' w='30%'>
                         <FormLabel>Trip Start Date:</FormLabel>
-                        <Field  onBlur={handleNewStart}  as={Input} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} type='date' id={startDate.name} name={startDate.name} min={minDateString}/>
+                        <Field  onBlur={handleNewStart}  as={Input} border='1px solid black' borderRadius='8px' padding='8px' type='date' id={startDate.name} name={startDate.name} min={minDateString}/>
                         <Flex color='red.500' fontSize='xs'>
                             <ErrorMessage name={startDate.name} />
                         </Flex>
                     </Flex>
                     <Flex direction='column' w='30%'>
                         <FormLabel>Trip End Date:</FormLabel>
-                        <Field onBlur={dateDiff} as={Input} type='date' id={endDate.name} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} name={endDate.name} min={minEndDate}/>
+                        <Field onBlur={dateDiff} as={Input} type='date' id={endDate.name} border='1px solid black' borderRadius='8px' padding='8px' name={endDate.name} min={minEndDate}/>
                         <Flex color='red.500' fontSize='xs'>
                             <ErrorMessage name={endDate.name} />
                         </Flex>
@@ -68,22 +68,22 @@ const CRForm: React.FC = () => {
                     <Flex direction='column'>
                         {destinations.map((destination: { destination: string, numDays: number }, index: number) => (
                             <Flex direction='column'>
-                                <Flex direction='row' alignItems='center' justifyContent='space-between' bg="#fafafa" style={{border: '2px solid black', borderRadius: '8px', padding: '8px',}} mb='4%' gap='1%'>
+                                <Flex direction='row' alignItems='center' justifyContent='space-between' bg="#fafafa" border='2px solid black' borderRadius='8px' padding='8px' mb='4%' gap='1%'>
                                     <Flex direction='column'  w='stretch'>
                                         <FormLabel>Destination:</FormLabel>
-                                        <Field bg='white' as={Input}  type='input' name={`destinations.${index}.destination`} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}}  placeholder={'Enter a city or airport'}/>
+                                        <Field bg='white' as={Input}  type='input' name={`destinations.${index}.destination`} border='1px solid black' borderRadius='8px' padding='8px'  placeholder='Enter a city or airport'/>
                                         <Flex color='red.500' fontSize='xs'>
                                             <ErrorMessage name={`destinations.${index}.destination`} />
                                         </Flex>
                                     </Flex>
                                     <Flex direction='column'  w='25%'>
                                         <FormLabel># of Days:</FormLabel>
-                                        <Field as={Input} bg='white' type='input' name={`destinations.${index}.numDays`} style={{border: '1px solid black', borderRadius: '8px', padding: '8px',}} placeholder={'Min # of days'}/>
+                                        <Field as={Input} bg='white' type='input' name={`destinations.${index}.numDays`} border='1px solid black' borderRadius='8px' padding='8px' placeholder='Min # of days'/>
                                         <Flex color='red.500' fontSize='xs'>
                                             <ErrorMessage name={`destinations.${index}.numDays`} />
                                         </Flex>
                                     </Flex>
-                                    <Image src={DeleteIcon} boxSize='8%'  onClick={() => {
+                                    <Image src={DeleteIcon} boxSize='8%' onClick={() => {
                                         arrayHelpers.remove(index)
                                     }}/> 
                                 </Flex>
@@ -96,10 +96,10 @@ const CRForm: React.FC = () => {
                             backgroundColor='rgba(78, 103, 235, 1)'
                             color='rgba(255, 255, 255, 1)'
                             borderRadius='35px'
-                            width='180px'
+                            w='180px'
                             alignSelf='center'
                             textColor='white'
-                            fontWeight={600}
+                            fontWeight='600'
                             onClick={() => arrayHelpers.push({ destination: '', numDays: ''})}
                             fontSize='16px'>
                                 Add new destination
@@ -109,7 +109,7 @@ const CRForm: React.FC = () => {
                             _active={{ backgroundColor: 'green' }}
                             backgroundColor='limegreen'
                             color='rgba(255, 255, 255, 1)'
-                            width='180px'
+                            w='180px'
                             borderRadius='35px'
                             alignSelf='center'
                             textColor='white'

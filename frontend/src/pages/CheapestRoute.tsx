@@ -133,7 +133,7 @@ const CheapestRoute: React.FC = (): JSX.Element => {
             )}
             {showResults && topRoutes && (
                 <Flex direction='column' mx='10%'>
-                    <Heading textAlign='left'>Search Results:</Heading>
+                    <Heading textAlign='left' mt='2%'>Search Results:</Heading>
                     <Accordion allowToggle w='stretch' style={{margin: '0 auto', marginTop: '40px', marginBottom: '40px',}}>
                         {topRoutes.map((route, index) => (
                             <AccordionItem w='stretch'>
@@ -147,12 +147,17 @@ const CheapestRoute: React.FC = (): JSX.Element => {
                                                 </Text>
                                                 {route.path.map((destination, i) => (
                                                     <>
-                                                    <Text as='span'>
-                                                        {i === 0 && destination.location + ' -> '}
-                                                    </Text>
-                                                    <Text as='span' mr='1%'>
-                                                        {i !== 0 && destination.location + ' -> '}
-                                                    </Text>
+                                                    {i !== 0 && (
+                                                        <>
+                                                        <Text as='span'>
+                                                            {i === 0 && destination.location + ' -> '}
+                                                        </Text>
+                                                        <Text as='span' mr='1%'>
+                                                                {i !== 0 && destination.location + ' -> '}
+                                                        </Text>
+                                                        </>
+                                                    )}
+                                                    
                                                     </>
                                                 ))}
                                                 <Text as='span'>

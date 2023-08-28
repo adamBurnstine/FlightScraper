@@ -34,22 +34,13 @@ const Header: React.FC = (): JSX.Element | null => {
     }
 
     return (
-        <Flex
-         position='fixed'
-         boxShadow='0px 4px 9px rgba(0, 0, 0, 0.1)'
-         align='center'
-         h={['40px', '40px', '52px', '70px']}
-         paddingX={['16px', '16px', '24px', '24px']}
-         w='100%'
-         backdropFilter='blur(15px)'
-         bg='rgba(255, 255, 255, .75)'
-         zIndex='9299'>
+        <Flex position='fixed' boxShadow='0px 4px 9px rgba(0, 0, 0, 0.1)' align='center' h='8%' paddingX='2%' w='100%' bg='white'>
             <Flex>
-                <Image src={logo} alt='logo' onClick={handleLogoClick} cursor='pointer' h={['22px', '22px', '35px', '50px']} />
+                <Image src={logo} alt='logo' onClick={handleLogoClick} cursor='pointer' h='50px' />
             </Flex>
             <Flex alignItems='center'>
                 {navBarRoutes.map((el) => (
-                    <ChakraLink key={el.title} as={NavLink} to={el.path} fontSize={['16px', '16px', '16px', '20px']} textColor='black' marginLeft={['16px', '16px', '16px', '32px']} onClick={handleLinkClick}>
+                    <ChakraLink key={el.title} as={NavLink} to={el.path} fontSize={['12px', '12px', '16px', '19px']} textColor='black' marginLeft={['16px', '16px', '16px', '32px']} onClick={handleLinkClick}>
                      {el.title}
                   </ChakraLink>
                 ))}
