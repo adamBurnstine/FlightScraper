@@ -29,13 +29,13 @@ Tip: Keep the total “Min # of Days” for your cities lower than the total len
 ### Single Routes: 
 10. You can also search for a single flight on a specific date. A history of past single flight searches is available from the ‘History’ tab.
 
-## Known bugs
+### Known bugs
 
 1. The application scrapes data according to the structure of google flights website. Because of this it is extremely brittle and if anything changes in the structure of how google flights returns results, the application may be subject to many errors.
 2. If the user enters a location that google isn't sure where it is, the search returns an error but doesn't give enough details about where the error arose to the user.
 
 
-## License
+### License
 MIT
 
 Copyright © 2020 Adam Burnstine 
