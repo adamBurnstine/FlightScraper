@@ -38,4 +38,4 @@ Tip: Keep the total “Min # of Days” for your cities lower than the total len
 ### License
 MIT
 
-Copyright © 2020 Adam Burnstine 
+Copyright © 2023 Adam Burnstine 
